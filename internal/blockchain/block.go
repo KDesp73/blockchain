@@ -38,7 +38,16 @@ func generateBlock(prevBlock Block, data string) Block {
 }
 
 func (bc *Blockchain) AddBlock(data string) {
-	prevBlock := bc.Chain[len(bc.Chain) - 1]
+	var prevBlock Block
+	if len(bc.Chain) == 0 {
+		prevBlock = Block{
+			Index: -1, Data: "", Timestamp: "", PrevHash: "",
+		}
+	} else {
+		prevBlock = bc.Chain[len(bc.Chain) - 1]
+	}
 	newBlock := generateBlock(prevBlock, data)
 	bc.Chain = append(bc.Chain, newBlock)
 }
+
+

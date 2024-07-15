@@ -3,17 +3,11 @@ package main
 import (
 	"fmt"
 	"blockchain/internal/blockchain"
+	"time"
 )
 
-func main() {
-	// Initialize a new blockchain
-	blockchain := blockchain.Blockchain{}
-	blockchain.AddBlock("Block 1 Data")
-	blockchain.AddBlock("Block 2 Data")
-	blockchain.AddBlock("Block 3 Data")
-
-	// Print out the blockchain
-	for _, block := range blockchain.Chain {
+func printBlockchain(bc *blockchain.Blockchain) {
+	for _, block := range bc.Chain {
 		fmt.Printf("Index: %d\n", block.Index)
 		fmt.Printf("Timestamp: %s\n", block.Timestamp)
 		fmt.Printf("Data: %s\n", block.Data)
@@ -21,4 +15,25 @@ func main() {
 		fmt.Printf("Hash: %s\n", block.Hash)
 		fmt.Println("--------------------")
 	}
+
+}
+
+func main() {
+	bc := &blockchain.Blockchain{
+		Chain: []blockchain.Block{
+			{
+				Index:     0,
+				Timestamp: time.Now().String(),
+				Data:      "Genesis Block",
+				PrevHash:  "",
+				Hash:      "",
+			},
+		},
+	}
+
+	bc.AddBlock("Block 1 Data")
+	bc.AddBlock("Block 2 Data")
+	bc.AddBlock("Block 3 Data")
+
+	printBlockchain(bc)
 }
