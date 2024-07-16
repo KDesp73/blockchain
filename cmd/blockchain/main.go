@@ -7,15 +7,17 @@ import (
 )
 
 func printBlockchain(bc *blockchain.Blockchain) {
+	println("")
 	for _, block := range bc.Chain {
-		fmt.Printf("Index: %d\n", block.Index)
+		fmt.Printf("Nonce: %d\n", block.Nonce)
 		fmt.Printf("Timestamp: %s\n", block.Timestamp)
-		fmt.Printf("Transaction: %s\n", block.Transaction.ToString())
+		fmt.Printf("Transaction: [Amount: %d, From: ..., To: ...]\n", block.Transaction.Amount)
 		fmt.Printf("Previous Hash: %s\n", block.PrevHash)
 		fmt.Printf("Hash: %s\n", block.Hash)
 		fmt.Println("--------------------")
 	}
 }
+
 func main() {
 	bc := blockchain.NewBlockchain();
 

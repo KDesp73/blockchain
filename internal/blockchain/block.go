@@ -12,7 +12,7 @@ import (
 )
 
 type Block struct {
-	Index int
+	Nonce int
 	Timestamp string
 	Transaction transaction.Transaction
 	PrevHash string
@@ -28,7 +28,7 @@ func (bc *Blockchain) LastBlock() *Block{
 }
 
 func (block *Block) computeHash() string {
-	record := strconv.Itoa(block.Index) + block.Timestamp + block.Transaction.ToString() + block.PrevHash
+	record := strconv.Itoa(block.Nonce) + block.Timestamp + block.Transaction.ToString() + block.PrevHash
 
 	h := sha256.New()
 	h.Write([]byte(record))
@@ -40,9 +40,11 @@ func (block *Block) computeHash() string {
 	return hash
 }
 
-func generateBlock(prevBlock Block, t transaction.Transaction) Block {
-	var newBlock Block
-	newBlock.Index = prevBlock.Index + 1
+func generateBlock(prevBlock Block, t transaction.Transaction) *Block {
+	var newBlock = &Block{}
+
+	
+	newBlock.Nonce = random(0, 99999999999)
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Transaction = t
 	newBlock.PrevHash = prevBlock.Hash
@@ -57,7 +59,7 @@ func (bc *Blockchain) AddBlock(block *Block) {
 func (bc *Blockchain) AddTransaction(t transaction.Transaction, publicKey *rsa.PublicKey, signature string) {
 	if encryption.VerifySignature(publicKey, []byte(t.ToString()), []byte(signature)) == nil {
 		block := generateBlock(*bc.LastBlock(), t)
-		bc.Chain = append(bc.Chain, block)
+		bc.Chain = append(bc.Chain, *block)
 	}
 }
 
@@ -74,7 +76,7 @@ func NewGenesisBlock() Block {
 	}
 
 	genesisBlock := Block{
-		Index:       0,
+		Nonce:       0,
 		Timestamp:   timestamp,
 		Transaction: genesisTransaction,
 		PrevHash:    prevHash,

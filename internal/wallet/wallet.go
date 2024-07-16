@@ -13,8 +13,9 @@ type Wallet struct {
 	PublicKey *rsa.PublicKey
 	PrivateKey *rsa.PrivateKey
 }
+
 func NewWallet(name string) *Wallet {
-	wallet := &Wallet{name: name} // Initialize wallet with a new instance of Wallet
+	wallet := &Wallet{name: name}
 
 	public, private, err := encryption.GenerateRSAKeys()
 
