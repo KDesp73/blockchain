@@ -6,10 +6,18 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 
 	"golang.org/x/crypto/ssh"
 )
+
+func Hash(data string) string {
+	h := sha256.New()
+	h.Write([]byte(data))
+	hashed := h.Sum(nil)
+	return hex.EncodeToString(hashed)
+}
 
 func SignData(privateKey *rsa.PrivateKey, data []byte) ([]byte, error) {
 	hashed := sha256.Sum256(data)

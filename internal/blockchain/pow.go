@@ -4,14 +4,12 @@ import (
 	"blockchain/internal/encryption"
 	"blockchain/internal/transaction"
 	"crypto/rsa"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
-const difficulty = 5
+const Difficulty = 6
 
 func (bc *Blockchain) MineBlock(t transaction.Transaction, publicKey *rsa.PublicKey, signature string) {
 	if encryption.VerifySignature(publicKey, []byte(t.ToString()), []byte(signature)) != nil {
@@ -23,14 +21,10 @@ func (bc *Blockchain) MineBlock(t transaction.Transaction, publicKey *rsa.Public
 	fmt.Println("⛏️ Mining...")
 	newBlock := generateBlock(*bc.LastBlock(), t)
 
-	solution := 1
 	for {
-		h := sha256.New()
-		h.Write([]byte(strconv.Itoa(newBlock.Nonce + solution)))
-		hashed := h.Sum(nil)
-		hash := hex.EncodeToString(hashed)
+		hash := encryption.Hash(newBlock.computeHash() + strconv.Itoa(newBlock.Nonce))
 		
-		if hash[:difficulty] == strings.Repeat("0", difficulty) {
+		if hash[:Difficulty] == strings.Repeat("0", Difficulty) {
 			fmt.Printf("Hash found: %s\n\n", hash)
 			break
 		}

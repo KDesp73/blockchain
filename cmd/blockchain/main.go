@@ -2,8 +2,11 @@ package main
 
 import (
 	"blockchain/internal/blockchain"
+	"blockchain/internal/encryption"
 	"blockchain/internal/wallet"
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 func printBlockchain(bc *blockchain.Blockchain) {
@@ -18,6 +21,22 @@ func printBlockchain(bc *blockchain.Blockchain) {
 	}
 }
 
+func verifyBlockchain(bc *blockchain.Blockchain) bool {
+	for i, block := range bc.Chain {
+		if i == 0 {
+			continue // skip Genesis block
+		}
+
+		verification_hash := encryption.Hash(block.Hash + strconv.Itoa(block.Nonce))
+		if verification_hash[:blockchain.Difficulty] != strings.Repeat("0", blockchain.Difficulty) {
+			fmt.Printf("Invalid block: %d\n", i)
+			return false
+		}
+		fmt.Printf("Block %d passed\n", i)
+	}
+	return true
+}
+
 func main() {
 	bc := blockchain.NewBlockchain();
 
@@ -28,6 +47,12 @@ func main() {
 	kdesp73.SendMoney(bc, 10, thanasisgeorg.PublicKey)
 	thanasisgeorg.SendMoney(bc, 20, creatorkostas.PublicKey)
 	creatorkostas.SendMoney(bc, 30, kdesp73.PublicKey)
+	kdesp73.SendMoney(bc, 10, thanasisgeorg.PublicKey)
+	thanasisgeorg.SendMoney(bc, 20, creatorkostas.PublicKey)
+	creatorkostas.SendMoney(bc, 30, kdesp73.PublicKey)
 
 	printBlockchain(bc)
+
+	verifyBlockchain(bc)
+
 }

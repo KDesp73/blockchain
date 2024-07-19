@@ -9,13 +9,13 @@ import (
 )
 
 type Wallet struct {
-	name string
+	Name string
 	PublicKey *rsa.PublicKey
-	PrivateKey *rsa.PrivateKey
+	privateKey *rsa.PrivateKey
 }
 
 func NewWallet(name string) *Wallet {
-	wallet := &Wallet{name: name}
+	wallet := &Wallet{Name: name}
 
 	public, private, err := encryption.GenerateRSAKeys()
 
@@ -25,7 +25,7 @@ func NewWallet(name string) *Wallet {
     }
 
 	wallet.PublicKey = public
-	wallet.PrivateKey = private
+	wallet.privateKey = private
 
     return wallet
 }
@@ -38,7 +38,7 @@ func (w *Wallet) ToString() string {
 		return ""
 	}
 
-	return fmt.Sprintf("name: %s\npublic key: %s\n", w.name, publicKey)
+	return fmt.Sprintf("name: %s\npublic key: %s\n", w.Name, publicKey)
 }
 
 func (w* Wallet) SendMoney(bc *blockchain.Blockchain, amount int, payeePublicKey *rsa.PublicKey) {
@@ -48,7 +48,7 @@ func (w* Wallet) SendMoney(bc *blockchain.Blockchain, amount int, payeePublicKey
 		Payee: payeePublicKey,
 	}
 
-	signature, err := encryption.SignData(w.PrivateKey, []byte(t.ToString()))
+	signature, err := encryption.SignData(w.privateKey, []byte(t.ToString()))
 
 	if err != nil {
 		fmt.Println("Could not sign the transaction: ", err)

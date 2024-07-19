@@ -12,11 +12,11 @@ import (
 )
 
 type Block struct {
-	Nonce int
 	Timestamp string
 	Transaction transaction.Transaction
 	PrevHash string
 	Hash string
+	Nonce int
 }
 
 type Blockchain struct {
@@ -43,8 +43,7 @@ func (block *Block) computeHash() string {
 func generateBlock(prevBlock Block, t transaction.Transaction) *Block {
 	var newBlock = &Block{}
 
-	
-	newBlock.Nonce = random(0, 99999999999)
+	newBlock.Nonce = 0
 	newBlock.Timestamp = time.Now().String()
 	newBlock.Transaction = t
 	newBlock.PrevHash = prevBlock.Hash
